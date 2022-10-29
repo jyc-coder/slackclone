@@ -14,17 +14,25 @@ import {
 } from '@mui/material';
 import React, {useCallback, useState} from 'react';
 import AddIcon from '@mui/icons-material/Add';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import "../firebase"
 import { child, getDatabase, onChildAdded, push, ref, update } from 'firebase/database';
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { setCurrentChannel } from './../store/channelReducer';
 
 function ChannelMenu() {
   const [open, setOpen] = useState(false);
   const [channelName, setChannelName] = useState('');
   const [channelDetail, setChannelDetail] = useState('');
   const [channels, setChannels] = useState([]);
+  const [activeChannelId, setActiveChannelId] = useState("")
+  const [firstLoaded, setFirstLoaded] = useState(true);
   const handleClickOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  const dispatch = useDispatch()
+
 
   useEffect(() => {
     const db = getDatabase();
@@ -36,7 +44,12 @@ function ChannelMenu() {
       setChannels([])
       unsubscribe()
     }
-  },[])
+  }, [])
+  
+  const changeChannel = (channel) => {
+    setActiveChannelId(channel.id);
+    dispatch(setCurrentChannel(channel))
+  }
 
   const handleSubmit = useCallback(async () => {
     //firebase의 데이터베이스에 데이터를 등록
@@ -58,7 +71,15 @@ function ChannelMenu() {
     } catch (error) {
       console.error(error)
     }
-  },[channelDetail, channelName])
+  }, [channelDetail, channelName])
+  
+  useEffect(() => {
+    if (channels.length > 0 && firstLoaded) {
+      setActiveChannelId(channels[0].id);
+      dispatch(setCurrentChannel(channels[0]))
+      setFirstLoaded(false);
+    }
+  },[channels, dispatch, firstLoaded])
 
   return (
     <>
@@ -71,16 +92,24 @@ function ChannelMenu() {
             </IconButton>
           }
         >
-          <ListItemIcon>
-            <ListItemText primary="채널" sx={{wordBreak: 'break-all', color: '#9a939b'}} />
+          <ListItemIcon sx={{color: '#9a939b'}}>
+            <ArrowDropDownIcon />
           </ListItemIcon>
+          <ListItemText primary="채널" sx={{wordBreak: 'break-all', color: '#9a939b'}} />
         </ListItem>
-        {channels.map((channel) => (
-          // TODO store 구현 , selected 구현
-          <ListItem button key={channel.id}>
-            <ListItemText primary={`# ${channel.name}`} sx={{wordBreak: 'break-all', color: '#9a939b'}} />
-          </ListItem>
-        ))}
+        <List component="div" disablePadding sx={{pl: 3}}>
+          {channels.map((channel) => (
+            // TODO store 구현 , selected 구현
+            <ListItem
+              onClick={() => changeChannel(channel)}
+              button
+              selected={channel.id === activeChannelId}
+              key={channel.id}
+            >
+              <ListItemText primary={`# ${channel.name}`} sx={{wordBreak: 'break-all', color: '#9a939b'}} />
+            </ListItem>
+          ))}
+        </List>
       </List>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>채널 추가</DialogTitle>
