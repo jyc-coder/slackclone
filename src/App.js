@@ -9,6 +9,8 @@ import { getAuth } from 'firebase/auth';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearUser, setUser } from './store/userReducer';
 import Main from './Pages/Main';
+import { Stack } from '@mui/system';
+import { CircularProgress } from '@mui/material';
 
 function App() {
   const dispatch = useDispatch()
@@ -22,11 +24,19 @@ function App() {
       }
     })
     return () => unsubscribe();
-  },[dispatch])
+  }, [dispatch])
+  
+  if (isLoading) {
+    return (
+      <Stack alignItems="center" justifyContent="center" height="100vh" >
+        <CircularProgress color="secondary" size={150}/>
+      </Stack>
+    )
+  }
   return (
     <Routes>
       <Route path="/" element={currentUser ? <Main /> : <Navigate to="/login" />}></Route>
-      <Route path="/login" element={<Login />}></Route>
+      <Route path="/login" element={currentUser ? <Navigate to ="/"/> :<Login />}></Route>
       <Route path="/join" element={currentUser ? <Navigate to="/" /> : <Join />}></Route>
     </Routes>
   );
