@@ -3,6 +3,7 @@ import React from 'react'
 import ChatHeader from './ChatHeader'
 import { useSelector } from 'react-redux';
 import ChatInput from './ChatInput';
+import ChatMessage from './ChatMessage';
 
 function Chat() {
      const {channel} = useSelector((state) => state);
@@ -12,7 +13,7 @@ function Chat() {
           <ChatHeader channelInfo={channel.currentChannel} />
           <Grid container component={Paper} variant="outlined" sx={{ mt: 3, position: "relative" }}>
               <List sx={{ height: "calc(100vh - 350px)", overflow: "scroll", width: "100%", position: "relative" }}> 
-                  {/* 채팅메세지 */}
+                  <ChatMessage/>
               </List>
               <Divider />
               <ChatInput/>
