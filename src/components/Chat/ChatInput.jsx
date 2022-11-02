@@ -63,7 +63,8 @@ function ChatInput() {
           }}
           autoComplete="off"
           label="메세지 입력"
-          fullWidth
+                  fullWidth
+                  value={message}
           onChange={handleChange}
         ></TextField>
       </Grid>

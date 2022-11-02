@@ -74,7 +74,7 @@ function Login() {
           </LoadingButton>
           <Grid container justifyContent="flex-end">
             <Grid item>
-              <Link to="/login" style={{ textDecoration: "none", color: "blue" }}>
+              <Link to="/join" style={{ textDecoration: "none", color: "blue" }}>
                 계정이 없으시면 회원가입으로 이동!
               </Link>
             </Grid>
