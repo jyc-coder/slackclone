@@ -5,11 +5,20 @@ import ImageIcon from '@mui/icons-material/Image';
 import SendIcon from '@mui/icons-material/Send';
 import '../../firebase';
 import {getDatabase, push, ref, serverTimestamp, set} from 'firebase/database';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
+import { Picker } from 'emoji-mart';
+import 'emoji-mart/css/emoji-mart.css';
+
+
+
 function ChatInput() {
   const {channel, user} = useSelector((state) => state);
-  const [message, setMessage] = useState('');
-  const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useState('');
+    const [showEmoji, setShowEmogi] = useState(false);
+    const [loading, setLoading] = useState(false);
+    
+    const handleTogglePicker = useCallback(() => setShowEmogi((show) => !show),[])
+    
   const handleChange = useCallback((e) => {
     setMessage(e.target.value);
   }, []);
@@ -38,14 +47,33 @@ function ChatInput() {
   }, [channel.currentChannel?.id, createMessage, message]);
     
     
+    
+    const handleSelectEmoji = useCallback((e) => {
+        const sym = e.unified.split("-");
+        const codesArray = [];
+        sym.forEach(el => codesArray.push("0x" + el));
+        const emoji = String.fromCodePoint(...codesArray);
+        setMessage((messageValue) => messageValue+emoji)
+    },[])
+    
   return (
     <Grid container sx={{p: '20px'}}>
       <Grid item xs={12} sx={{position: 'relative'}}>
+        {showEmoji && (
+          <Picker
+            set="google"
+            className="emojipicker"
+            title="이모지를 선택하세요."
+                      emoji="point_up"
+                      onSelect={handleSelectEmoji}
+            style={{position: 'absolute', bottom: '80px'}}
+          />
+        )}
         <TextField
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <IconButton>
+                <IconButton onClick={handleTogglePicker}>
                   <InsertEmoticon />
                 </IconButton>
                 <IconButton>
@@ -56,15 +84,15 @@ function ChatInput() {
             endAdornment: (
               <InputAdornment position="start">
                 <IconButton disabled={loading} onClick={clickSendMessage}>
-                  <SendIcon/>
+                  <SendIcon />
                 </IconButton>
               </InputAdornment>
             ),
           }}
           autoComplete="off"
           label="메세지 입력"
-                  fullWidth
-                  value={message}
+          fullWidth
+          value={message}
           onChange={handleChange}
         ></TextField>
       </Grid>
