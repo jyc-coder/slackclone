@@ -1,5 +1,5 @@
 import { Divider, Grid, List, Paper, Toolbar } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import ChatHeader from './ChatHeader'
 import { useSelector } from 'react-redux';
 import ChatInput from './ChatInput';
@@ -11,6 +11,7 @@ function Chat() {
   const { channel, user } = useSelector((state) => state);
 
   const [messages, setMessages] = useState([])
+  const messageEndRef = useRef();
   
 
   useEffect(() => {
@@ -33,7 +34,16 @@ function Chat() {
     return () => {
       unsubscribe?.();
     }
-  },[channel.currentChannel, user.currentUser])
+  }, [channel.currentChannel, user.currentUser])
+  
+  useEffect(() => {
+    const setTimeoutId = setTimeout(() => { 
+      messageEndREf.current.scrollIntoView({behavior:"smooth" })
+    }, 2000)
+    return () => {
+      clearTimeout(setTimeoutId)
+    }
+  })
 
   return (
     <>
@@ -43,7 +53,8 @@ function Chat() {
               <List sx={{ height: "calc(100vh - 350px)", overflow: "scroll", width: "100%", position: "relative" }}> 
           {messages.map(message => (
             <ChatMessage key={message.timestamp} message={message} user={user} />
-                 ))}
+          ))}
+          <div ref={messageEndRef}></div>
               </List>
               <Divider />
               <ChatInput/>
