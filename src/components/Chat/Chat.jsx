@@ -38,7 +38,7 @@ function Chat() {
   
   useEffect(() => {
     const setTimeoutId = setTimeout(() => { 
-      messageEndREf.current.scrollIntoView({behavior:"smooth" })
+      messageEndRef.current.scrollIntoView({behavior:"smooth" })
     }, 2000)
     return () => {
       clearTimeout(setTimeoutId)
