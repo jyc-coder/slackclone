@@ -1,5 +1,5 @@
 import {InsertEmoticon} from '@mui/icons-material';
-import {Grid, IconButton, InputAdornment, TextField} from '@mui/material';
+import {Grid, IconButton, InputAdornment, LinearProgress, TextField} from '@mui/material';
 import React, {useCallback, useState} from 'react';
 import ImageIcon from '@mui/icons-material/Image';
 import SendIcon from '@mui/icons-material/Send';
@@ -8,6 +8,7 @@ import {getDatabase, push, ref, serverTimestamp, set} from 'firebase/database';
 import { useSelector } from 'react-redux';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
+import ImageModal from '../Modal/ImageModal';
 
 
 
@@ -16,8 +17,15 @@ function ChatInput() {
     const [message, setMessage] = useState('');
     const [showEmoji, setShowEmogi] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [imageModalOpen, setImageModalOpen] = useState(false);
+    const [uploading, setUploading] = useState(false);
+    const [percent, setPercent] = useState(0);
+
     
-    const handleTogglePicker = useCallback(() => setShowEmogi((show) => !show),[])
+    const handleTogglePicker = useCallback(() => setShowEmogi((show) => !show), [])
+    
+    const handleClickOpen = useCallback(() => setImageModalOpen(true),[])
+    const handleClickClose =  useCallback(() => setImageModalOpen(false),[])
     
   const handleChange = useCallback((e) => {
     setMessage(e.target.value);
@@ -76,7 +84,7 @@ function ChatInput() {
                 <IconButton onClick={handleTogglePicker}>
                   <InsertEmoticon />
                 </IconButton>
-                <IconButton>
+                <IconButton onClick={handleClickOpen}>
                   <ImageIcon />
                 </IconButton>
               </InputAdornment>
@@ -94,7 +102,11 @@ function ChatInput() {
           fullWidth
           value={message}
           onChange={handleChange}
-        ></TextField>
+              />
+              {uploading ? <Grid item xs={12} sx={{ m:"10px" }}>
+                  <LinearProgress variant="determinate" value={percent} />
+              </Grid> : null }
+              <ImageModal handleClose={handleClickClose} setPercent={setPercent} setUploading={setUploading} open={imageModalOpen}/>
       </Grid>
     </Grid>
   );
