@@ -2,9 +2,10 @@ import React from 'react';
 import {Avatar, Grid, ListItem, ListItemAvatar, ListItemText} from '@mui/material';
 import dayjs from 'dayjs';
 
-
-const relativeTime = require("dayjs/plugin/relativeTime");
+const relativeTime = require('dayjs/plugin/relativeTime');
 dayjs.extend(relativeTime);
+
+const IsImage = (message) => message.hasOwnProperty('image');
 
 function ChatMessage({message, user}) {
   return (
@@ -17,15 +18,20 @@ function ChatMessage({message, user}) {
           <ListItemText
             sx={{display: 'flex'}}
             primary={message.user.name}
-            primaryTypographyProps={{fontWeight: 'bold', color: message.user.id === user.currentUser?.uid ? "orange" :"black" }}
+            primaryTypographyProps={{
+              fontWeight: 'bold',
+              color: message.user.id === user.currentUser?.uid ? 'orange' : 'black',
+            }}
             secondary={dayjs(message.timestamp).fromNow()}
             secondaryTypographyProps={{color: 'gray', ml: 1}}
           />
         </Grid>
         <Grid item xs={12}>
-          <ListItemText align="left" sx={{wordBreak: 'break-all'}} primary={message.content} />
-          {/* TODO 이미지 추가 */}
-          {/* <img alt='message' src="" style={{maxWidth:"100%"}} /> */}
+          {IsImage(message) ? (
+            <img alt="message" src={message.image} style={{maxWidth: '100%'}} />
+          ) : (
+            <ListItemText align="left" sx={{wordBreak: 'break-all'}} primary={message.content} />
+          )}
         </Grid>
       </Grid>
     </ListItem>
