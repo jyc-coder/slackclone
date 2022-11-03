@@ -1,5 +1,5 @@
 import {AppBar, Avatar, IconButton, Menu, MenuItem, Toolbar, Typography} from '@mui/material';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {Box} from '@mui/system';
 import TagIcon from '@mui/icons-material/Tag';
 import "../firebase"
@@ -7,18 +7,29 @@ import "../firebase"
 import { useSelector } from 'react-redux';
 import { signOut } from 'firebase/auth';
 import { getAuth } from 'firebase/auth';
+import ProfileModal from './Modal/ProfileModal';
 function Header() {
+  const [showProfileModal, setShowProfileModal] = useState(false);
     const { user } = useSelector(state => state)
-    const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+ 
+  const handleCloseMenu = () => setAnchorEl(null);
+   const handleLogout = async () => {
+     await signOut(getAuth());
+   };
+  
+  const handleClickOpen = useCallback(() => {
+    setShowProfileModal(true)
+    handleCloseMenu()
+  }, [])
+  
     const handleOpenMenu = (event) => {
         setAnchorEl(event.currentTarget)
     } 
 
-    const handleCloseMenu = () => setAnchorEl(null)
-    const handleLogout = async() => {
-        await signOut(getAuth())
-    }
-    
+  const handleCloseProfileModal = useCallback(() => { setShowProfileModal(false) },[])
+  
+  
 
   return (
     <>
@@ -42,7 +53,7 @@ function Header() {
               <Avatar sx={{ml: '10px'}} alt="profileImage" src={user.currentUser?.photoURL} />
             </IconButton>
             <Menu sx={{mt: '45px'}} anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseMenu} anchorOrigin={{vertical:"top", horizontal:"right"}}>
-              <MenuItem>
+              <MenuItem onClick={handleClickOpen}>
                 <Typography textAlign="center">프로필이미지</Typography>
               </MenuItem>
                           <MenuItem onClick={handleLogout}>
@@ -52,6 +63,7 @@ function Header() {
           </Box>
         </Toolbar>
       </AppBar>
+      <ProfileModal open={showProfileModal} handleClose={handleCloseProfileModal} />
     </>
   );
 }
