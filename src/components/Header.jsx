@@ -10,7 +10,7 @@ import { getAuth } from 'firebase/auth';
 import ProfileModal from './Modal/ProfileModal';
 function Header() {
   const [showProfileModal, setShowProfileModal] = useState(false);
-    const { user } = useSelector(state => state)
+    const { user, theme } = useSelector(state => state)
   const [anchorEl, setAnchorEl] = useState(null);
  
   const handleCloseMenu = () => setAnchorEl(null);
@@ -33,10 +33,9 @@ function Header() {
 
   return (
     <>
-      {/* TODO backgroundColor 테마 적용 */}
       <AppBar
         position="fixed"
-        sx={{zIndex: (theme) => theme.zIndex.drawer + 1, color: '#9A9398', backgroundColor: '#d8bbdf'}}
+        sx={{zIndex: (theme) => theme.zIndex.drawer + 1, color: '#9A9398', backgroundColor: theme.mainTheme}}
       >
         <Toolbar sx={{display: 'flex', justifyContent: 'space-between', height: '50px'}}>
           <Box sx={{display: 'flex'}}>

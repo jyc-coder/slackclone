@@ -18,10 +18,11 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import "../../firebase"
 import { child, getDatabase, onChildAdded, push, ref, update } from 'firebase/database';
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentChannel } from '../../store/channelReducer';
 
 function ChannelMenu() {
+  const {theme} = useSelector((state)=>state)
   const [open, setOpen] = useState(false);
   const [channelName, setChannelName] = useState('');
   const [channelDetail, setChannelDetail] = useState('');
@@ -83,8 +84,8 @@ function ChannelMenu() {
 
   return (
     <>
-      {/* TODO 테마 반영을 할 예정이므로 추후 수정 */}
-      <List sx={{overflow: 'auto', width: 240, backgroundColor: '#123123'}}>
+      
+      <List sx={{overflow: 'auto', width: 240, backgroundColor: theme.mainTheme}}>
         <ListItem
           secondaryAction={
             <IconButton sx={{color: '#aebbb5'}} onClick={handleClickOpen}>
