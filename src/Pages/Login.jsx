@@ -50,7 +50,7 @@ function Login() {
           <TagIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          회원가입
+          로그인
         </Typography>
         <Box component="form" noValidate sx={{mt: 3}} onSubmit={handleSubmit}>
           <TextField margin="normal" required fullWidth label="이메일 주소" name="email" autoComplete="off" autoFocus />
