@@ -14,7 +14,8 @@ import PaletteIcon from '@mui/icons-material/Palette';
 import {HexColorPicker} from 'react-colorful';
 import '../../firebase';
 import {child, getDatabase, onChildAdded, push, ref, update} from 'firebase/database';
-import {useSelector} from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { setTheme } from '../../store/themeReducer';
 
 function ThemeMenu() {
   const {user} = useSelector((state) => state);
@@ -26,7 +27,7 @@ function ThemeMenu() {
   const handleClose = useCallback(() => setShowThemeModal(false), []);
   const handleChangeMain = useCallback((color) => setMainTheme(color), []);
   const handleChangeSub = useCallback((color) => setSubTheme(color), []);
-
+    const dispatch = useDispatch();
     const handleSaveTheme = useCallback(async () => {
         if (!user.currentUser?.uid) return;
     try {
@@ -54,7 +55,9 @@ function ThemeMenu() {
             setUserTheme([])
             unsubscribe?.();
         }
-    },[user.currentUser.uid])
+    }, [user.currentUser.uid])
+    
+
   return (
     <>
       <List sx={{overflow: 'auto', width: 60, backgroundColor: '#150c16'}}>
@@ -65,7 +68,7 @@ function ThemeMenu() {
         </ListItem>
         {userTheme.map((theme,i) => (
             <ListItem key={i}>
-            <div className="theme-box">
+            <div className="theme-box" onClick={() => {dispatch(setTheme(theme.mainTheme,theme.subTheme))}}>
               <div className="theme-main" style={{backgroundColor: theme.mainTheme}}></div>
 
               <div className="theme-sub" style={{backgroundColor: theme.subTheme}}></div>
